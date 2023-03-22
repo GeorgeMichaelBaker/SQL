@@ -1,1 +1,59 @@
+-- I have queried a schema with data regarding the World Cup. I found this data on Maven Analytics, and had 6 .csv files compiling the data. 
+-- I uploaded each of these .csv files to MySQL Workbench as each as an individual table. -- 
 
+SELECT 
+    ROUND(MIN(goals_scored / matches_played), 2) AS min_goals_scored_per_game,
+    ROUND(MAX(goals_scored / matches_played), 2) AS max_goals_scored_per_game,
+    ROUND(AVG(goals_scored / matches_played), 2) AS avg_goals_scored_per_game
+FROM
+    world_cups;
+
+-- Who are the top 5 ranking teams in the 2022 World Cup? -- 
+
+SELECT 
+    team, FIFA_ranking
+FROM
+    2022_world_cup_groups
+ORDER BY FIFA_ranking
+LIMIT 5;
+
+-- What are average goals scored per game at all the World Cups for the top 10 ranking teams in the 2022 World Cup and who has the best ratio? -- 
+
+CREATE VIEW top_10_teams AS
+    SELECT 
+        team, 
+        FIFA_ranking
+    FROM
+        2022_world_cup_groups
+    ORDER BY FIFA_ranking
+    LIMIT 10; 
+
+SELECT
+    team,
+    FIFA_ranking,
+	  (SUM(Home_Goals) + SUM(Away_Goals)) AS Total_Goals,
+    (COUNT(Home_Team) + COUNT(Away_Team)) AS Total_Games,
+    (ROUND((SUM(Home_Goals) + SUM(Away_Goals))/(COUNT(Home_Team) + COUNT(Away_Team)),2)) AS Goals_per_Game,
+    RANK() OVER(ORDER BY (ROUND((SUM(Home_Goals) + SUM(Away_Goals))/(COUNT(Home_Team) + COUNT(Away_Team)),2)) DESC) AS Ratio_Rank
+FROM
+	  world_cup_matches
+INNER JOIN
+	  top_10_teams
+ON
+	  world_cup_matches.home_team = top_10_teams.team OR world_cup_matches.away_team = top_10_teams.team
+GROUP BY
+	  team;
+
+-- What are the highest scoring matches in World Cup history and which teams were involved in them? -- 
+
+SELECT
+    ID,
+    Home_Team,
+    Away_Team,
+    (SUM(Home_Goals) + SUM(Away_Goals)) AS Total_Goals,
+    RANK() OVER(ORDER BY (SUM(Home_Goals) + SUM(Away_Goals)) DESC) AS Goals_Rank
+FROM
+    world_cup_matches
+GROUP BY
+	  ID
+LIMIT 20;
