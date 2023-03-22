@@ -4,7 +4,7 @@
 -- What World Cup had the highest on average goals per game? -- 
 
 SELECT
-	host_country,
+    host_country,
     year,
     ROUND(MIN(goals_scored / matches_played), 2) AS min_goals_scored_per_game,
     ROUND(MAX(goals_scored / matches_played), 2) AS max_goals_scored_per_game,
@@ -12,10 +12,10 @@ SELECT
 FROM
     world_cups
 GROUP BY
-	year,
+    year,
     host_country
 ORDER BY
-	ROUND(AVG(goals_scored / matches_played), 2) DESC;
+    ROUND(AVG(goals_scored / matches_played), 2) DESC;
 
 -- Who are the top 5 ranking teams in the 2022 World Cup? -- 
 
