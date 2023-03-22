@@ -40,18 +40,18 @@ CREATE VIEW top_10_teams AS
 SELECT
     team,
     FIFA_ranking,
-	  (SUM(Home_Goals) + SUM(Away_Goals)) AS Total_Goals,
+    (SUM(Home_Goals) + SUM(Away_Goals)) AS Total_Goals,
     (COUNT(Home_Team) + COUNT(Away_Team)) AS Total_Games,
     (ROUND((SUM(Home_Goals) + SUM(Away_Goals))/(COUNT(Home_Team) + COUNT(Away_Team)),2)) AS Goals_per_Game,
     RANK() OVER(ORDER BY (ROUND((SUM(Home_Goals) + SUM(Away_Goals))/(COUNT(Home_Team) + COUNT(Away_Team)),2)) DESC) AS Ratio_Rank
 FROM
-	  world_cup_matches
+    world_cup_matches
 INNER JOIN
-	  top_10_teams
+    top_10_teams
 ON
-	  world_cup_matches.home_team = top_10_teams.team OR world_cup_matches.away_team = top_10_teams.team
+    world_cup_matches.home_team = top_10_teams.team OR world_cup_matches.away_team = top_10_teams.team
 GROUP BY
-	  team;
+    team;
 
 -- What are the highest scoring matches in World Cup history and which teams were involved in them? -- 
 
@@ -64,5 +64,5 @@ SELECT
 FROM
     world_cup_matches
 GROUP BY
-	  ID
+    ID
 LIMIT 20;
